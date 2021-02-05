@@ -24,25 +24,34 @@ var pois = [
     {
         label: 'nord canada - face 2/nw',
         ll: [69.63432502361071, -128.39537114181763]
+    },
+    {
+        label: 'australie - face 1/sw',
+        ll: [-24.266559589153673, 119.98353347911838]
+    },
+    {
+        label: 'australie - face 3/se',
+        ll: [-26.489810701074497, 151.27259467293186]
     }
 ]
 
 function main() {
-    var line = turf.lineString([pois[0]['ll'],pois[2]['ll'],pois[3]['ll']]);
-    s2.boundingCellsKeys(...turf.bbox(line),3);
+    var line = turf.lineString([pois[0]['ll'], pois[2]['ll'], pois[3]['ll']]);
+    s2.boundingCellsKeys(...turf.bbox(line), 3);
     pois.forEach(poi => {
         let lat = poi.ll[0]
         let long = poi.ll[1]
         let key1 = s2.latLngToKey(poi.ll[0], poi.ll[1], 1)
         let key2 = s2.latLngToKey(poi.ll[0], poi.ll[1], 2)
         let key3 = s2.latLngToKey(poi.ll[0], poi.ll[1], 3)
-        // console.log(poi.label)
-        // console.log(`\tkey/L1: ` + key1 + `\tid/L1: ` + s2.keyToId(key1))
+        console.log(poi.label)
+        console.log(`\tkey/L1: ` + key1 + `\tid/L1: ` + s2.keyToId(key1))
         // console.log('\t\tvoisins L1:\t' + s2.latLngToNeighborKeys(lat, long, 1))
         // console.log(`\tkey/L2: ` + key2 + `\tid/L2: ` + s2.keyToId(key2))
         // console.log('\t\tvoisins L2:\t' + s2.latLngToNeighborKeys(lat, long, 2))
         // console.log(`\tkey/L3: ` + key3 + `\tid/L3: ` + s2.keyToId(key3))
         // console.log('\t\tvoisins L3:\t' + s2.latLngToNeighborKeys(lat, long, 3))
+        console.log(`\tface: `+s2.LatLngToFaceUV(s2.L.LatLng(...poi.ll)))
     });
 }
 

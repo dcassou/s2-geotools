@@ -1,7 +1,7 @@
 {
   "name": "s2-geotools",
   "version": "0.0.1",
-  "description": "wrapper and rewritting of s2-geometry and getjson-cover which are not maintained anymore",
+  "description": "wrapper and rewritting of s2-geometry to add some region management features",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/dcassou/s2-geotools#readme",
   "dependencies": {
-    "@turf/bbox": "^6.3.0"
+    "@turf/bbox": "^6.3.0",
+    "@turf/helpers": "^6.3.0",
+    "s2-geometry": "^1.2.10"
   }
 }
