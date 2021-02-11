@@ -44,15 +44,20 @@ function main() {
         let key1 = s2.latLngToKey(poi.ll[0], poi.ll[1], 1)
         let key2 = s2.latLngToKey(poi.ll[0], poi.ll[1], 2)
         let key3 = s2.latLngToKey(poi.ll[0], poi.ll[1], 3)
-        console.log(poi.label)
-        console.log(`\tkey/L1: ` + key1 + `\tid/L1: ` + s2.keyToId(key1))
+        // console.log(poi.label)
+        // console.log(`\tkey/L1: ` + key1 + `\tid/L1: ` + s2.keyToId(key1))
         // console.log('\t\tvoisins L1:\t' + s2.latLngToNeighborKeys(lat, long, 1))
         // console.log(`\tkey/L2: ` + key2 + `\tid/L2: ` + s2.keyToId(key2))
         // console.log('\t\tvoisins L2:\t' + s2.latLngToNeighborKeys(lat, long, 2))
         // console.log(`\tkey/L3: ` + key3 + `\tid/L3: ` + s2.keyToId(key3))
         // console.log('\t\tvoisins L3:\t' + s2.latLngToNeighborKeys(lat, long, 3))
-        console.log(`\tface: `+s2.LatLngToFaceUV(s2.L.LatLng(...poi.ll)))
+        // console.log(`\tface: `+ s2.LatLngToFaceUV(s2.L.LatLng(...poi.ll)))
     });
+    s2.s2.faces.forEach(face => {
+        console.log('face: '+face.properties.name)
+        console.log(`\t`+JSON.stringify(face,null,2))
+        console.log('\center of '+face.properties.name+': '+turf.center(face).geometry.coordinates)
+    })
 }
 
 main();

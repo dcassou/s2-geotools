@@ -4,26 +4,86 @@ var turf = require("@turf/turf");
 /*** 
 ****   S2 cube faces mapping expressed as long,lat pairs for turf input
 ***/
-var s2 = {
-    f_ws: [-45,-45],
-    f_en: [45,45],
-    f_es: [45,-45],
-    f_wn: [-45,45],
-    b_ws: [135,-45],
-    b_en: [-135,45],
-    b_es: [-135,-45],
-    b_wn: [135,45]
+
+s2geotools.s2 = {};
+
+var s2 = s2geotools.s2;
+
+s2.borders = {
+    north: 45,
+    south: -45,
+    west: -45,
+    east: 45,
+    b_west: -135,
+    b_east: 135
+};
+
+var borders = s2.borders;
+s2.q = { lat: '90', lng: '90' };
+
+s2.corners = {
+    ws: [borders.west, borders.south],
+    en: [borders.east, borders.north],
+    es: [borders.east, borders.south],
+    wn: [borders.west, borders.north],
+    b_ws: [borders.b_east, borders.south],
+    b_en: [borders.b_west, borders.north],
+    b_es: [borders.b_west, borders.south],
+    b_wn: [borders.b_east, borders.north]
+};
+var corners = s2.corners
+
+var createS2Face = function (corner, n) {
+    let polygon = [];
+    let order = [];
+
+    switch (n % 5) {
+        case 0:
+            order = [[0, 90], [90, 0], [0, -90], [-90, 0]];
+            break;
+        case 1:
+            order = [[90, 0], [0, 90], [-90, 0], [0, -90]];
+            break;
+        case 2:
+        case 5:
+            order = [[-90, 0], [-90, 0], [-90, 0], [-90, 0]];
+            break;
+        case 3:
+            order = [[0, -90], [90, 0], [0, 90], [-90, 0]];
+            break;
+        case 4:
+            order = [[90, 0], [0, -90], [-90, 0], [0, 90]];
+            break;
+    }
+    polygon = order.reduce((p, c) => {
+        newCorner = [p[p.length - 1][0] + c[0], p[p.length - 1][1] + c[1]]
+        p.push(newCorner)
+        return p
+    }, [corner])
+
+    return [polygon]
 }
 
-s2geotools.faces = [
-    turf.polygon([[s2.f_ws,s2.f_wn,s2.f_en,s2.f_es,s2.f_ws]],{name: 'face 0'})
-]
+s2.faces = [
+    turf.polygon(createS2Face(corners.ws, 0), { name: 'face 0' }),
+    turf.polygon(createS2Face(corners.es, 1), { name: 'face 1' }),
+    turf.polygon(createS2Face(corners.en, 2), { name: 'face 2' }),
+    turf.polygon(createS2Face(corners.b_wn, 3), { name: 'face 3' }),
+    turf.polygon(createS2Face(corners.b_en, 4), { name: 'face 4' }),
+    turf.polygon(createS2Face(corners.b_es, 5), { name: 'face 5' }),
+    // turf.polygon([[s2.corners.ws, s2.corners.wn, s2.corners.en, s2.corners.es, s2.corners.ws]], { name: 'face 0' }),
+    // turf.polygon([[s2.corners.es, s2.corners.b_ws, s2.corners.b_wn, s2.corners.en, s2.corners.es]], { name: 'face 1' }),
+    // turf.polygon([[s2.corners.en, s2.corners.wn, s2.corners.b_wn, s2.corners.b_wn, s2.corners.en]], { name: 'face 2' }),
+    // turf.polygon([[s2.corners.b_wn, s2.corners.b_ws, s2.corners.b_es, s2.corners.b_en, s2.corners.b_wn]], { name: 'face 3' }),
+    // turf.polygon([[s2.corners.b_en, s2.corners.en, s2.corners.ws, s2.corners.b_es, s2.corners.b_en]], { name: 'face 4' }),
+    // turf.polygon([[s2.corners.b_es, s2.corners.b_ws, s2.corners.b_es, s2.corners.ws, s2.corners.b_es]], { name: 'face 5' }),
+];
 
 s2geotools.LatLngToFaceUV = function (LatLng) {
-    if (Math.abs(LatLng.lat)>45) {
-        return (LatLng.lat)>0?2:5
+    if (Math.abs(LatLng.lat) > 45) {
+        return (LatLng.lat) > 0 ? 2 : 5
     } else {
-        return (Math.trunc((LatLng.lng+45)/90)+(LatLng.lng>135?1:0))
+        return (Math.trunc((LatLng.lng + 45) / 90) + (LatLng.lng > 135 ? 1 : 0))
     }
 };
 
